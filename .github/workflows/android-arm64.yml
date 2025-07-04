@@ -90,8 +90,8 @@ jobs:
         run: |
           set -e
 
-          echo "Locating Python archive in cross-build/${ANDROID_TRIPLE}/dist..."
-          ARCHIVE=$(find cross-build/${ANDROID_TRIPLE}/dist -name '*.tar.gz' | head -n 1)
+          echo "Locating Python archive in cross-build/${{ env.ANDROID_TRIPLE }}/dist..."
+          ARCHIVE=$(find cross-build/${{ env.ANDROID_TRIPLE }}/dist -name '*.tar.gz' | head -n 1)
 
           if [[ ! -f "$ARCHIVE" ]]
           then
@@ -114,18 +114,18 @@ jobs:
           fi
 
           # Prepare packaging directory
-          mkdir -p packaging/${ANDROID_TRIPLE}
-          echo "📁 Moving prefix contents into ${ANDROID_TRIPLE}/..."
-          mv extracted/prefix/* packaging/${ANDROID_TRIPLE}/
+          mkdir -p packaging/${{ env.ANDROID_TRIPLE }}
+          echo "📁 Moving prefix contents into ${{ env.ANDROID_TRIPLE }}/..."
+          mv extracted/prefix/* packaging/${{ env.ANDROID_TRIPLE }}/
 
           echo "📦 Creating final tarball..."
-          tar -czf "python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz" -C packaging ${ANDROID_TRIPLE}
+          tar -czf "python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz" -C packaging ${{ env.ANDROID_TRIPLE }}
 
           echo "✅ Final archive created:"
-          ls -lh "python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz"
+          ls -lh "python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz"
 
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_HOST }}
-          path: python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz
+          path: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz
