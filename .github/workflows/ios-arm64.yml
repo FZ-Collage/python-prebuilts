@@ -127,6 +127,12 @@ jobs:
 
       - name: Configure Python for iOS arm64
         run: |
+          export SDKROOT=$(xcrun --sdk iphoneos --show-sdk-path)
+          export CC=$(xcrun --sdk iphoneos --find clang)
+          export CPP="$CC -E"
+          export CFLAGS="-isysroot $SDKROOT -arch arm64 -mios-version-min=12.0 -fPIC"
+          export LDFLAGS="$CFLAGS"
+
           ./configure \
             LIBLZMA_CFLAGS="-I$(pwd)/cross-build/iphoneos.arm64/xz/include -I$(pwd)/cross-build/iphoneos.arm64/xz/include/lzma" \
             LIBLZMA_LIBS="-L$(pwd)/cross-build/iphoneos.arm64/xz/lib -llzma" \
@@ -137,8 +143,9 @@ jobs:
             --with-openssl="$(pwd)/cross-build/iphoneos.arm64/openssl" \
             --host=arm64-apple-ios12.0 \
             --build=arm64-apple-darwin \
-            --with-build-python=$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }} \
-            --enable-framework
+            --with-build-python="$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }}" \
+            --enable-framework \
+            CPP="$CPP"
         shell: bash
 
       - name: Build Python for iOS arm64
