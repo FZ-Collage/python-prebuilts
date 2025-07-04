@@ -29,7 +29,7 @@ jobs:
       - name: Build with Clang
         run: |
           cd Python-${{ env.PYTHON_VERSION }}/PCbuild
-          build.bat -p x64 -t Build -e -d --use-clang
+          build.bat -p x64 -t Build -e -d
         shell: cmd
 
       - name: Package output
