@@ -22,8 +22,7 @@ jobs:
 
       - name: Extract tar.gz
         run: |
-          sudo mkdir -p /opt/llvm
-          sudo tar -xf Python-3.10.18.tgz
+          tar -xf Python-3.10.18.tgz
           mv Python-3.10.18/* .
 
       - name: Configure python
@@ -33,7 +32,7 @@ jobs:
 
       - name: Build python
         run: |
-          sudo make -j2
+          make -j2
 
       - name: Install python
         run: |
