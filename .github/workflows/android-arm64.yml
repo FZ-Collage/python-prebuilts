@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: 3.10
+  PYTHON_VERSION: "3.10"
   ANDROID_HOST: aarch64-linux-android
   # armv7a-linux-androideabi
   # x86_64-linux-android

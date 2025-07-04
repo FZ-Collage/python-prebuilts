@@ -10,25 +10,30 @@ permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: 3.10
+  PYTHON_VERSION: "3.10"
 
 jobs:
   build-python-windows-clang:
     runs-on: windows-2022
 
     steps:
+      - name: mkdir
+        run: mkdir C:/cpython
 
       - name: Clone
-        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git
+        working-directory: C:/cpython
+        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
 
       - name: Build
-        run: ./cpython/Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
+        working-directory: C:/cpython
+        run: ./Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
         
       - name: list
+        working-directory: C:/cpython
         run: ls packaged-windows
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-windows
-          path: packaged-windows
+          path: C:/cpython
