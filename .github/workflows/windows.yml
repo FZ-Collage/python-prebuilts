@@ -37,14 +37,11 @@ jobs:
       - name: List externals
         run: dir externals
 
-      - name: List externals/pythonx86
-        run: dir externals/pythonx86
-
-      - name: List externals/pythonx86/tools
-        run: dir externals/pythonx86/tools
+      - name: List PCbuild/amd64
+        run: dir PCbuild/amd64
 
       - name: Upgrade Sphinx
-        run: ./externals/pythonx86/tools/python.exe -m pip install "sphinx<8.0"
+        run: ./PCbuild/amd64/python.exe -m pip install "sphinx<8.0"
 
       - name: Gen Docs
         run: ./Doc/make.bat htmlhelp
