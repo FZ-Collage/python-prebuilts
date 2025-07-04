@@ -79,7 +79,8 @@ jobs:
             READELF=/usr/bin/readelf \
             CPPFLAGS="-DANDROID -D__ANDROID_API__=${{ env.ANDROID_API }}" \
             CFLAGS="--sysroot=$SYSROOT" \
-            LDFLAGS="--sysroot=$SYSROOT"
+            LDFLAGS="--sysroot=$SYSROOT" \
+            --without-ensurepip
 
       - name: Build Python
         working-directory: python-src
