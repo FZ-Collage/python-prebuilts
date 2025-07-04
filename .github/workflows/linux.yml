@@ -10,24 +10,27 @@ on:
 permissions:
   contents: write
 
+env:
+  PYTHON_VERSION: 3.13.5
+
 jobs:
-  configure-build-and-package-python-ubutnu:
+  configure-build-and-package-python-ubuntu:
     runs-on: ubuntu-latest
     steps:
       - name: Download python source
         run: |
-          curl -L -# -o Python-3.13.5.tgz \
-            https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz
+          curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
+            https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
         shell: bash
 
       - name: Extract tar.gz
         run: |
-          tar -xf Python-3.13.5.tgz
-          mv Python-3.13.5/* .
+          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
+          mv Python-${{ env.PYTHON_VERSION }}/* .
 
       - name: Configure python
         run: |
-          ./configure --prefix=/python-3.13.5 --enable-optimizations
+          ./configure --prefix=/python-${{ env.PYTHON_VERSION }} --enable-optimizations
 
       - name: Build python
         run: |
@@ -40,5 +43,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-3.13.5
-          path: /python-3.13.5
+          name: python-${{ env.PYTHON_VERSION }}
+          path: /python-${{ env.PYTHON_VERSION }}
