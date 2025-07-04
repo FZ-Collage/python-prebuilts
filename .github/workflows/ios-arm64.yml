@@ -26,6 +26,10 @@ jobs:
           repository: python/cpython
           ref: ${{ env.PYTHON_VERSION }}
 
+      - name: Install autotools dependencies
+        run: |
+          brew install autoconf automake libtool
+
       - name: Build host macOS Python
         run: |
           ./configure --prefix=$(pwd)/cross-build/macOS
