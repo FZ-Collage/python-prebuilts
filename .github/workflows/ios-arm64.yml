@@ -1,0 +1,71 @@
+name: Build Python iOS (arm64)
+
+on:
+  push:
+    branches:
+      - run-actions
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  build-python-ios-arm64:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: python/cpython
+          ref: ${{ env.PYTHON_VERSION }}
+
+      - name: Build host macOS Python
+        run: |
+          ./configure --prefix=$(pwd)/cross-build/macOS
+          make -j4 all
+          make install
+        shell: bash
+
+      - name: Set environment path for iOS
+        run: |
+          echo "PATH=$(pwd)/iOS/Resources/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Configure Python for iOS arm64
+        run: |
+          ./configure \
+            LIBLZMA_CFLAGS="-I$(pwd)/cross-build/iphoneos.arm64/xz/include" \
+            LIBLZMA_LIBS="-L$(pwd)/cross-build/iphoneos.arm64/xz/lib -llzma" \
+            BZIP2_CFLAGS="-I$(pwd)/cross-build/iphoneos.arm64/bzip2/include" \
+            BZIP2_LIBS="-L$(pwd)/cross-build/iphoneos.arm64/bzip2/lib -lbz2" \
+            LIBFFI_CFLAGS="-I$(pwd)/cross-build/iphoneos.arm64/libffi/include" \
+            LIBFFI_LIBS="-L$(pwd)/cross-build/iphoneos.arm64/libffi/lib -lffi" \
+            --with-openssl="$(pwd)/cross-build/iphoneos.arm64/openssl" \
+            --host=arm64-apple-ios12.0 \
+            --build=arm64-apple-darwin \
+            --with-build-python=$(pwd)/cross-build/macOS/bin/python3.13 \
+            --enable-framework
+        shell: bash
+
+      - name: Build Python for iOS arm64
+        run: |
+          make -j2 all
+        shell: bash
+
+      - name: Install Python for iOS arm64
+        run: |
+          make install
+        shell: bash
+
+      - name: Upload Python iOS arm64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-${{ env.PYTHON_VERSION }}-ios-arm64
+          path: cross-build/iphoneos.arm64
