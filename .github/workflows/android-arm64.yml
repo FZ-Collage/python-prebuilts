@@ -27,6 +27,11 @@ jobs:
   build-python-android:
     runs-on: ubuntu-latest
     steps:
+      - name: Create working directory
+        run: |
+          sudo mkdir -p /cpython
+          sudo chown $USER:$USER /cpython
+
       - name: Install dependencies
         run: |
           sudo apt update
@@ -60,3 +65,9 @@ jobs:
           ./Android/android.py configure-build
           ./Android/android.py make-build
           ./Android/android.py package ${{ env.ANDROID_HOST }}
+
+      - name: Upload packaged Python Android build
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-android-${{ env.ANDROID_HOST }}
+          path: /cpython/packaged/${{ env.ANDROID_HOST }}
