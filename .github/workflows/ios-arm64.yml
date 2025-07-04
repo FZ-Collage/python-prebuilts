@@ -33,11 +33,6 @@ jobs:
       - name: List brew bin
         run: ls /opt/homebrew/bin
 
-      - name: Whereis autoconf
-        run: |
-          whereis autoconf
-          whereis autoreconf
-
       - name: find autoreconf
         run: sudo find / -type f -name autoreconf 2>/dev/null
 
@@ -50,7 +45,7 @@ jobs:
 
       - name: Set environment path for iOS
         run: |
-          echo "PATH=$(pwd)/iOS/Resources/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin" >> $GITHUB_ENV
+          echo "PATH=${{ env.PATH }}:$(pwd)/iOS/Resources/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin" >> $GITHUB_ENV
           echo "IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)" >> $GITHUB_ENV
           echo "CC=\"$(xcrun -sdk iphoneos -f clang)\"" >> $GITHUB_ENV
           export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
