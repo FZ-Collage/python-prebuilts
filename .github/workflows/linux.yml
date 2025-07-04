@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Download python source
         run: |
-          curl -L -# -o Python-3.10.18.tgz \
+          curl -L -# -o Python-3.13.5.tgz \
             https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz
         shell: bash
 
