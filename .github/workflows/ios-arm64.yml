@@ -50,7 +50,7 @@ jobs:
             --with-openssl="$(pwd)/cross-build/iphoneos.arm64/openssl" \
             --host=arm64-apple-ios12.0 \
             --build=arm64-apple-darwin \
-            --with-build-python=$(pwd)/cross-build/macOS/bin/python3.13 \
+            --with-build-python=$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }} \
             --enable-framework
         shell: bash
 
