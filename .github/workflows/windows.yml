@@ -1,4 +1,4 @@
-name: Build Python Windows (Clang)
+name: Build Python Windows (PCbuild)
 
 on:
   push:
@@ -13,19 +13,27 @@ env:
   PYTHON_VERSION: "3.10"
 
 jobs:
-  build-python-windows-clang:
+  build-python-windows-pcbuild:
     runs-on: windows-2022
 
     steps:
-      - name: mkdir
-        run: mkdir C:/cpython
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: python/cpython
+          ref: ${{ env.PYTHON_VERSION }}
 
-      - name: Clone
-        working-directory: C:/cpython
-        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
+      - name: Setup external
+        run: ./PCbuild/get_externals.bat
+
+      - name: Upgrade Sphinx
+        run: ./externals/pythonx86/tools/python.exe -m pip install "sphinx<8.0"
+
+      - name: Gen Docs
+        run: ./Doc/make.bat htmlhelp
 
       - name: Build
-        working-directory: C:/cpython
         run: ./Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
         
       - name: list
