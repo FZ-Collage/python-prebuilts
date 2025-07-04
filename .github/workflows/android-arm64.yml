@@ -87,7 +87,9 @@ jobs:
             CPPFLAGS="-DANDROID -D__ANDROID_API__=${{ env.ANDROID_API }}" \
             CFLAGS="--sysroot=$SYSROOT" \
             LDFLAGS="--sysroot=$SYSROOT" \
-            --without-ensurepip
+            --without-ensurepip \
+            --disable-ipv6 \
+            --disable-ipv4
         shell: bash
 
       - name: Build Python
