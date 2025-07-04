@@ -14,35 +14,28 @@ env:
 
 jobs:
   build-python-windows-clang:
-    runs-on: windows-2025
+    runs-on: windows-2022
 
     steps:
+      - name: Install dependencies
+        uses: microsoft/setup-msbuild@v1.3
 
       - name: Download Python source
         run: |
-          curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
-            https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
+          curl -L -o Python-${{ env.PYTHON_VERSION }}.tgz https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
+          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
         shell: bash
 
-      - name: Set up Clang toolchain
+      - name: Build with Clang
         run: |
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "AR=llvm-ar" >> $GITHUB_ENV
-          echo "RANLIB=llvm-ranlib" >> $GITHUB_ENV
-          echo "STRIP=llvm-strip" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
-          echo "LD=lld-link" >> $GITHUB_ENV
-        shell: bash
+          cd Python-${{ env.PYTHON_VERSION }}/PCbuild
+          build.bat -p x64 -t Build -e -d --use-clang
+        shell: cmd
 
-      - name: Extract, Configure, Build, Install
+      - name: Package output
         run: |
-          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz -C .
-          ./configure \
-            --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-windows \
-            --enable-optimizations \
-            --without-ensurepip
-          nmake -j2
-          nmake install
+          mkdir -p python-${{ env.PYTHON_VERSION }}-windows
+          cp -r Python-${{ env.PYTHON_VERSION }}/PCbuild/amd64/* python-${{ env.PYTHON_VERSION }}-windows/
         shell: bash
 
       - name: Upload artifact
