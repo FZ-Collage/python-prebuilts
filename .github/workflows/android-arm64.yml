@@ -25,18 +25,24 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential curl unzip libffi-dev
+          sudo apt update
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository ppa:deadsnakes/ppa
+          sudo apt update
+          sudo apt install -y python3.10 build-essential curl unzip libffi-dev python3
+        shell: bash
 
       - name: Download Python source
         run: |
           curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
             https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
+        shell: bash
 
       - name: Extract Python source
         run: |
           tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
           mv Python-${{ env.PYTHON_VERSION }} python-src
+        shell: bash
 
       - name: Download Android NDK
         run: |
@@ -44,6 +50,7 @@ jobs:
             https://dl.google.com/android/repository/android-ndk-${{ env.NDK_VERSION }}-linux.zip
           unzip -q android-ndk.zip
           mv android-ndk-${{ env.NDK_VERSION }} $HOME/android-ndk
+        shell: bash
 
       - name: Set up Android toolchain
         run: |
@@ -55,6 +62,7 @@ jobs:
           echo "STRIP=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
           echo "CXX=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang++" >> $GITHUB_ENV
           echo "LD=$TOOLCHAIN/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang" >> $GITHUB_ENV
+        shell: bash
 
       - name: Configure Python for Android
         working-directory: python-src
@@ -81,16 +89,19 @@ jobs:
             CFLAGS="--sysroot=$SYSROOT" \
             LDFLAGS="--sysroot=$SYSROOT" \
             --without-ensurepip
+        shell: bash
 
       - name: Build Python
         working-directory: python-src
         run: |
           make -j$(nproc)
+        shell: bash
 
       - name: Install Python to custom prefix
         working-directory: python-src
         run: |
           make install
+        shell: bash
 
       - name: Upload Android Python Artifact
         uses: actions/upload-artifact@v4

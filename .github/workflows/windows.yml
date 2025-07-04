@@ -29,22 +29,27 @@ jobs:
           tar -xf Python-${{ env.PYTHON_VERSION }}.tgz -C .
         shell: bash
 
-      - name: Set environment variables for Clang
+      - name: Set up Clang toolchain
         run: |
-          echo "CC=clang-cl" >> $env:GITHUB_ENV
-          echo "CXX=clang-cl" >> $env:GITHUB_ENV
-          echo "LINK=lld-link" >> $env:GITHUB_ENV
-        shell: powershell
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "AR=llvm-ar" >> $GITHUB_ENV
+          echo "RANLIB=llvm-ranlib" >> $GITHUB_ENV
+          echo "STRIP=llvm-strip" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+          echo "LD=lld-link" >> $GITHUB_ENV
+        shell: bash
 
-      - name: Build Python with PCbuild and Clang
+      - name: Configure Python for Windows (clang)
+        working-directory: python-src
         run: |
-          cd PCbuild
-          call build.bat -e -p x64 -t Build -v -c Release ^
-            -D "CC=clang-cl" -D "CXX=clang-cl"
-        shell: cmd
+          ./configure \
+            --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-windows \
+            --enable-optimizations \
+            --without-ensurepip
+        shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-windows
-          path: PCbuild/amd64
+          path: python-${{ env.PYTHON_VERSION }}-windows
