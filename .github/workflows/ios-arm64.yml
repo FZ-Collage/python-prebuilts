@@ -132,13 +132,8 @@ jobs:
           cd zstd-1.5.6/build/cmake
           mkdir build_ios && cd build_ios
 
-          cmake .. \
-            -DCMAKE_TOOLCHAIN_FILE=../../cmake/Toolchains/ios.toolchain.cmake \
-            -DIOS_PLATFORM=OS \
-            -DCMAKE_INSTALL_PREFIX=$TARGET_DIR/zstd
-
-          make -j$(sysctl -n hw.logicalcpu)
-          make install
+          make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu) lib
+          make PREFIX="$TARGET_DIR/zstd" install
 
           cd ..
 
