@@ -1,0 +1,46 @@
+name: Build Python
+on:
+  push:
+    branches:
+      - run-actions
+      - main
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: write
+
+jobs:
+  configure-build-and-package-python-ubutnu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download python source
+        run: |
+          curl -L -# -o Python-3.10.18.tgz \
+            https://www.python.org/ftp/python/3.10.18/Python-3.10.18.tgz
+        shell: bash
+
+      - name: Extract tar.gz
+        run: |
+          sudo mkdir -p /opt/llvm
+          sudo tar -xf Python-3.10.18.tgz
+          mv Python-3.10.18/* .
+
+      - name: Configure python
+        run: |
+          ./configure --prefix=./python-3.10.18 --enable-static \
+                      --enable-shared --enable-optimizations
+
+      - name: Build python
+        run: |
+          sudo make -j2
+
+      - name: Install python
+        run: |
+          sudo make install
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-3.10.18
+          path: python-3.10.18
