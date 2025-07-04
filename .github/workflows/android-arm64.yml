@@ -65,7 +65,10 @@ jobs:
         run: ls Android
 
       - name: Configure
-        run: ./Android/android.py configure-host ${{ env.ANDROID_HOST }}
+        run: |
+          ./Android/android.py configure-build
+          ./Android/android.py make-build
+          ./Android/android.py configure-host ${{ env.ANDROID_HOST }}
         shell: bash
 
       - name: Build
