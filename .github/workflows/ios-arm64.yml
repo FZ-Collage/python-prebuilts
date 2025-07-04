@@ -135,6 +135,10 @@ jobs:
           export CFLAGS="-isysroot $SDKROOT -arch arm64 -mios-version-min=12.0 -fPIC"
           export LDFLAGS="$CFLAGS"
 
+          unset PKG_CONFIG_PATH
+          unset LIBRARY_PATH
+          unset LD_LIBRARY_PATH
+
           ./configure \
             LIBLZMA_CFLAGS="-I$(pwd)/cross-build/iphoneos.arm64/xz/include -I$(pwd)/cross-build/iphoneos.arm64/xz/include/lzma" \
             LIBLZMA_LIBS="-L$(pwd)/cross-build/iphoneos.arm64/xz/lib -llzma" \
@@ -159,6 +163,11 @@ jobs:
           export CPP="$CC -E"
           export AR=$(xcrun --sdk iphoneos --find ar)
           export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
+
+          unset PKG_CONFIG_PATH
+          unset LIBRARY_PATH
+          unset LD_LIBRARY_PATH
+          
           make CC="$CC" CPP="$CPP" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu)
         shell: bash
 
