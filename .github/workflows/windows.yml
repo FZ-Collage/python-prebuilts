@@ -53,11 +53,10 @@ jobs:
         run: ./Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
         
       - name: list
-        working-directory: C:/cpython
         run: ls packaged-windows
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}-windows
-          path: C:/cpython
+          name: python-${{ env.PYTHON_VERSION }}-amd64
+          path: packaged-windows/amd64/python-${{ env.PYTHON_VERSION }}-amd64.exe
