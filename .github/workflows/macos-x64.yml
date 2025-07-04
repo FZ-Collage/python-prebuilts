@@ -1,4 +1,4 @@
-name: Build Python
+name: Build Python MacOS x64
 on:
   push:
     branches:
@@ -27,18 +27,22 @@ jobs:
         run: |
           tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
           mv Python-${{ env.PYTHON_VERSION }}/* .
+        shell: bash
 
       - name: Configure python
         run: |
           ./configure --prefix=/python-${{ env.PYTHON_VERSION }}-macos-x64 --enable-optimizations
+        shell: bash
 
       - name: Build python
         run: |
           make -j2
+        shell: bash
 
       - name: Install python
         run: |
           sudo make install
+        shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

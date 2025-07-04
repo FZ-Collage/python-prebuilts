@@ -1,4 +1,4 @@
-name: Build Python
+name: Build Python Windows
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ env:
   PYTHON_VERSION: 3.13.5
 
 jobs:
-  configure-build-and-package-python-ubuntu:
+  configure-build-and-package-python-windows:
     runs-on: windows-2025
     steps:
       - name: Download python source
@@ -27,18 +27,22 @@ jobs:
         run: |
           tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
           mv Python-${{ env.PYTHON_VERSION }}/* .
+        shell: bash
 
       - name: Configure python
         run: |
           ./configure --prefix=C:\\python-${{ env.PYTHON_VERSION }}-windows --enable-optimizations
+        shell: bash
 
       - name: Build python
         run: |
           make -j2
+        shell: bash
 
       - name: Install python
         run: |
           sudo make install
+        shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
