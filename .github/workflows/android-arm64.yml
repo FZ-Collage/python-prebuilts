@@ -50,11 +50,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Configure Python for Android
+      - name: Clone
+        working_directory: /cpython
+        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
+
+      - name: Build and Package
+        working_directory: /cpython
         run: |
-          git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git
-          cd cpython
-          Android/android.py configure-build
-          Android/android.py make-build
-          Android/android.py package ${{ env.ANDROID_HOST }}
-        shell: bash
+          ./Android/android.py configure-build
+          ./Android/android.py make-build
+          ./Android/android.py package ${{ env.ANDROID_HOST }}
