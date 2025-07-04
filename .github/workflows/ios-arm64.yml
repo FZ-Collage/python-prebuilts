@@ -28,7 +28,7 @@ jobs:
 
       - name: Install autotools dependencies
         run: |
-          brew install autoconf
+          brew install autoconf automake libtool
 
       - name: List brew bin
         run: ls /opt/homebrew/bin
