@@ -51,11 +51,9 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Clone
-        working-directory: ~/cpython
         run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
 
       - name: Build and Package
-        working-directory: ~/cpython
         run: |
           ./Android/android.py configure-build
           ./Android/android.py make-build
