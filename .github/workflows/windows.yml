@@ -24,8 +24,11 @@ jobs:
           repository: python/cpython
           ref: ${{ env.PYTHON_VERSION }}
 
-      - name: Setup external
+      - name: Setup PCbuild external
         run: ./PCbuild/get_externals.bat
+
+      - name: Setup Tools/msi external
+        run: ./Tools/msi/get_externals.bat
 
       - name: List externals
         run: dir externals
