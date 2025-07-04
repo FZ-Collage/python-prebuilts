@@ -27,7 +27,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=~/python-3.10.18 \
+          ./configure --prefix=/python-3.10.18 \
             --enable-shared --enable-optimizations
 
       - name: Build python
@@ -42,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-3.10.18
-          path: ~/python-3.10.18
+          path: /python-3.10.18
