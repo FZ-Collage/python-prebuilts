@@ -17,22 +17,16 @@ jobs:
     runs-on: windows-2025
 
     steps:
-      - name: Install dependencies
-        run: |
-          choco install llvm ninja -y
-          echo "LLVM installed at: $(where clang)"
-        shell: powershell
 
       - name: Download Python source
         run: |
-          curl -L -o Python-${{ env.PYTHON_VERSION }}.tgz `
+          curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
             https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
-        shell: powershell
+        shell: bash
 
       - name: Extract source
         run: |
-          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
-          mv Python-${{ env.PYTHON_VERSION }} PythonSrc
+          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz -C .
         shell: bash
 
       - name: Set environment variables for Clang
@@ -44,19 +38,13 @@ jobs:
 
       - name: Build Python with PCbuild and Clang
         run: |
-          cd PythonSrc/PCbuild
+          cd PCbuild
           call build.bat -e -p x64 -t Build -v -c Release ^
             -D "CC=clang-cl" -D "CXX=clang-cl"
         shell: cmd
-
-      - name: Package build artifacts
-        run: |
-          mkdir -p python-clang
-          cp -r PythonSrc/PCbuild/amd64/* python-clang/
-        shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-windows
-          path: python-clang
+          path: PCbuild/amd64
