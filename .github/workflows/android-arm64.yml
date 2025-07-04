@@ -32,7 +32,12 @@ jobs:
           sudo apt update
           sudo apt install software-properties-common -y
           sudo add-apt-repository ppa:deadsnakes/ppa
-          sudo sed -i 's/^# deb-src/deb-src/' /etc/apt/sources.list
+          sudo tee -a /etc/apt/sources.list > /dev/null <<EOF
+            deb-src http://archive.ubuntu.com/ubuntu noble main universe restricted multiverse
+            deb-src http://archive.ubuntu.com/ubuntu noble-updates main universe restricted multiverse
+            deb-src http://archive.ubuntu.com/ubuntu noble-backports main universe restricted multiverse
+            deb-src http://security.ubuntu.com/ubuntu noble-security main universe restricted multiverse
+            EOF
           sudo apt update
           sudo apt install -y python3 build-essential curl unzip libffi-dev openjdk-21-jdk \
             pkg-config build-essential gdb lcov pkg-config \
