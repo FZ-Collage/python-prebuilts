@@ -74,6 +74,8 @@ jobs:
             --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
+            --disable-dependency-tracking \
+            --disable-docs \
             CC="$CC" \
             CFLAGS="$CFLAGS"
 
