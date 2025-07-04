@@ -88,11 +88,11 @@ jobs:
         shell: bash
 
       - name: List packaged
-        run: cross-build/aarch64-linux-android/dist
+        run: ls cross-build/${{ env.ANDROID_TRIPLE }}/dist
         shell: bash
 
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_HOST }}
-          path: cross-build/aarch64-linux-android/dist
+          path: cross-build/${{ env.ANDROID_TRIPLE }}/dist
