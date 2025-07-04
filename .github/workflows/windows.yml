@@ -40,6 +40,9 @@ jobs:
       - name: List PCbuild/amd64
         run: dir PCbuild/amd64
 
+      - name: Ensure pip is installed in built Python
+        run: ./PCbuild/amd64/python.exe -m ensurepip --upgrade
+
       - name: Upgrade Sphinx
         run: ./PCbuild/amd64/python.exe -m pip install "sphinx<8.0"
 
