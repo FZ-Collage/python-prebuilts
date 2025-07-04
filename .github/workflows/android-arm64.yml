@@ -79,20 +79,53 @@ jobs:
         run: ./Android/android.py package ${{ env.ANDROID_HOST }}
         shell: bash
 
-      - name: List Git Root
-        run: ls
-        shell: bash
-
-      - name: List Android Root
-        run: ls Android
-        shell: bash
-
       - name: List packaged
         run: ls cross-build/${{ env.ANDROID_TRIPLE }}/dist
         shell: bash
+
+      - name: Extract and repack Python for Android
+        shell: bash
+        env:
+          ANDROID_TRIPLE: ${{ env.ANDROID_TRIPLE }}
+        run: |
+          set -e
+
+          echo "Locating Python archive in cross-build/${ANDROID_TRIPLE}/dist..."
+          ARCHIVE=$(find cross-build/${ANDROID_TRIPLE}/dist -name '*.tar.gz' | head -n 1)
+
+          if [[ ! -f "$ARCHIVE" ]]
+          then
+            echo "❌ Python archive not found!"
+            exit 1
+          fi
+
+          echo "✅ Found archive: $ARCHIVE"
+
+          mkdir -p extracted
+          echo "📦 Extracting archive..."
+          tar -xzf "$ARCHIVE" -C extracted
+
+          # Confirm prefix exists
+          if [[ ! -d extracted/prefix ]]
+          then
+            echo "❌ expected extracted/prefix/, but it doesn't exist"
+            ls -l extracted
+            exit 1
+          fi
+
+          # Prepare packaging directory
+          mkdir -p packaging/${ANDROID_TRIPLE}
+          echo "📁 Moving prefix contents into ${ANDROID_TRIPLE}/..."
+          mv extracted/prefix/* packaging/${ANDROID_TRIPLE}/
+
+          echo "📦 Creating final tarball..."
+          tar -czf "python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz" -C packaging ${ANDROID_TRIPLE}
+
+          echo "✅ Final archive created:"
+          ls -lh "python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz"
 
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_HOST }}
-          path: cross-build/${{ env.ANDROID_TRIPLE }}/dist
+          path: python-${{ env.PYTHON_VERSION }}-android-${ANDROID_TRIPLE}.tar.gz
