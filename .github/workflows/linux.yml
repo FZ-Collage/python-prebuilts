@@ -43,5 +43,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}
+          name: python-${{ env.PYTHON_VERSION }}-linux
           path: /python-${{ env.PYTHON_VERSION }}
