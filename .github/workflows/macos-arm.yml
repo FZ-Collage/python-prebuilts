@@ -14,8 +14,8 @@ env:
   PYTHON_VERSION: 3.10.18
 
 jobs:
-  configure-build-and-package-python-ubuntu:
-    runs-on: ubuntu-latest
+  configure-build-and-package-python-macos-arm:
+    runs-on: macos-latest
     steps:
       - name: Download python source
         run: |
@@ -30,7 +30,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=/python-${{ env.PYTHON_VERSION }}-linux --enable-optimizations
+          ./configure --prefix=/python-${{ env.PYTHON_VERSION }}-macos-arm --enable-optimizations
 
       - name: Build python
         run: |
@@ -43,5 +43,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}-linux
-          path: /python-${{ env.PYTHON_VERSION }}-linux
+          name: python-${{ env.PYTHON_VERSION }}-macos-arm
+          path: /python-${{ env.PYTHON_VERSION }}-macos-arm
