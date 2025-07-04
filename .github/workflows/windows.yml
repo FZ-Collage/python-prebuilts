@@ -36,12 +36,12 @@ jobs:
 
       - name: Build python
         run: |
-          make -j2
+          nmake -j2
         shell: bash
 
       - name: Install python
         run: |
-          sudo make install
+          sudo nmake install
         shell: bash
 
       - name: Upload Artifact
