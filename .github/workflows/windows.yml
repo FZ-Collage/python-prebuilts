@@ -21,7 +21,7 @@ jobs:
       - name: Build with Clang
         run: |
           git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
-          call Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
+          call .\Tools\msi\buildrelease.bat -x64 -D -o packaged-windows
           dir packaged-windows
         shell: cmd
 
