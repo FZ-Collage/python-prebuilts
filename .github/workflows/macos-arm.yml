@@ -1,4 +1,5 @@
 name: Build Python MacOS (ARM)
+
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+
 permissions:
   contents: write
 
