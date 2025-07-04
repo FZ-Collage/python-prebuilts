@@ -27,6 +27,15 @@ jobs:
       - name: Setup external
         run: ./PCbuild/get_externals.bat
 
+      - name: List externals
+        run: dir externals
+
+      - name: List externals/pythonx86
+        run: dir externals/pythonx86
+
+      - name: List externals/pythonx86/tools
+        run: dir externals/pythonx86/tools
+
       - name: Upgrade Sphinx
         run: ./externals/pythonx86/tools/python.exe -m pip install "sphinx<8.0"
 

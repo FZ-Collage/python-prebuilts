@@ -58,6 +58,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: List dir
+        run: ls
+
+      - name: List Android
+        run: ls Android
+
       - name: Configure
         run: ./Android/android.py configure-build
         shell: bash
