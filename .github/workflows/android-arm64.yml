@@ -54,6 +54,7 @@ jobs:
           echo "RANLIB=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib" >> $GITHUB_ENV
           echo "STRIP=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
           echo "CXX=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang++" >> $GITHUB_ENV
+          echo "LD=$TOOLCHAIN/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang" >> $GITHUB_ENV
 
       - name: Configure Python for Android
         working-directory: python-src
@@ -61,7 +62,7 @@ jobs:
           ./configure \
             --host=${{ env.ANDROID_TRIPLE }} \
             --build=$(./config.guess) \
-            --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-android \
+            --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_ABI }} \
             --enable-optimizations \
             ac_cv_file__dev_ptmx=no \
             ac_cv_file__dev_ptc=no \
@@ -93,5 +94,5 @@ jobs:
       - name: Upload Android Python Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}-android
-          path: python-${{ env.PYTHON_VERSION }}-android
+          name: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_ABI }}
+          path: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_ABI }}

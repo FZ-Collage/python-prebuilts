@@ -1,51 +1,62 @@
-name: Build Python Windows
+name: Build Python Windows (Clang)
+
 on:
   push:
-    branches:
-      - run-actions
-      - main
+    branches: [ run-actions, main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+
 permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: 3.13.5
+  PYTHON_VERSION: 3.10.18
 
 jobs:
-  configure-build-and-package-python-windows:
+  build-python-windows-clang:
     runs-on: windows-2025
-    steps:
-      - name: Download python source
-        run: |
-          curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
-            https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
-        shell: bash
 
-      - name: Extract tar.gz
+    steps:
+      - name: Install dependencies
+        run: |
+          choco install llvm ninja -y
+          echo "LLVM installed at: $(where clang)"
+        shell: powershell
+
+      - name: Download Python source
+        run: |
+          curl -L -o Python-${{ env.PYTHON_VERSION }}.tgz `
+            https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
+        shell: powershell
+
+      - name: Extract source
         run: |
           tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
-          mv Python-${{ env.PYTHON_VERSION }}/* .
+          mv Python-${{ env.PYTHON_VERSION }} PythonSrc
         shell: bash
 
-      - name: Configure python
+      - name: Set environment variables for Clang
         run: |
-          ./configure --prefix=C:\\python-${{ env.PYTHON_VERSION }}-windows --enable-optimizations
-        shell: bash
+          echo "CC=clang-cl" >> $env:GITHUB_ENV
+          echo "CXX=clang-cl" >> $env:GITHUB_ENV
+          echo "LINK=lld-link" >> $env:GITHUB_ENV
+        shell: powershell
 
-      - name: Build python
+      - name: Build Python with PCbuild and Clang
         run: |
-          nmake -j2
-        shell: bash
+          cd PythonSrc/PCbuild
+          call build.bat -e -p x64 -t Build -v -c Release ^
+            -D "CC=clang-cl" -D "CXX=clang-cl"
+        shell: cmd
 
-      - name: Install python
+      - name: Package build artifacts
         run: |
-          sudo nmake install
+          mkdir -p python-clang
+          cp -r PythonSrc/PCbuild/amd64/* python-clang/
         shell: bash
 
-      - name: Upload Artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-windows
-          path: C:\\python-${{ env.PYTHON_VERSION }}-windows
+          path: python-clang

@@ -31,7 +31,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=/python-${{ env.PYTHON_VERSION }}-linux --enable-optimizations
+          ./configure --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-linux --enable-optimizations
         shell: bash
 
       - name: Build python
@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-linux
-          path: /python-${{ env.PYTHON_VERSION }}-linux
+          path: python-${{ env.PYTHON_VERSION }}-linux
