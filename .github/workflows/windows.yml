@@ -18,12 +18,14 @@ jobs:
 
     steps:
 
-      - name: Build with Clang
-        run: |
-          git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git
-          cpython\Tools\msi\buildrelease.bat -x64 -D -o packaged-windows
-          dir packaged-windows
-        shell: pwsh
+      - name: Clone
+        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git
+
+      - name: Build
+        run: ./cpython/Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
+        
+      - name: list
+        run: ls packaged-windows
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
