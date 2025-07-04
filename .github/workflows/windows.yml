@@ -27,7 +27,7 @@ jobs:
       - name: Wix 3.14
         run: |
           curl -o wix314.exe https://github.com/wixtoolset/wix3/releases/download/wix3141rtm/wix314.exe
-          wix314.exe /quiet /norestart
+          ./wix314.exe /quiet /norestart
         shell: bash
 
       - name: Build
