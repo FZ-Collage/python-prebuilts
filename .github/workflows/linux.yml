@@ -27,7 +27,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=./python-3.10.18 --enable-static \
+          ./configure --prefix=python-3.10.18 --enable-static \
                       --enable-shared --enable-optimizations
 
       - name: Build python
