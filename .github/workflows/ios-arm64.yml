@@ -33,9 +33,6 @@ jobs:
       - name: List brew bin
         run: ls /opt/homebrew/bin
 
-      - name: find autoreconf
-        run: sudo find / -type f -name autoreconf 2>/dev/null
-
       - name: Build host macOS Python
         run: |
           ./configure --prefix=$(pwd)/cross-build/macOS
