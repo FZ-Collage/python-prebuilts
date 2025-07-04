@@ -1,0 +1,97 @@
+name: Build Python Android
+
+on:
+  push:
+    branches:
+      - run-actions
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: 3.10.18
+  ANDROID_API: 24
+  ANDROID_ABI: arm64-v8a
+  ANDROID_TRIPLE: aarch64-linux-android
+  NDK_VERSION: r26d
+
+jobs:
+  build-python-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl unzip libffi-dev
+
+      - name: Download Python source
+        run: |
+          curl -L -# -o Python-${{ env.PYTHON_VERSION }}.tgz \
+            https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
+
+      - name: Extract Python source
+        run: |
+          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz
+          mv Python-${{ env.PYTHON_VERSION }} python-src
+
+      - name: Download Android NDK
+        run: |
+          curl -L -# -o android-ndk.zip \
+            https://dl.google.com/android/repository/android-ndk-${{ env.NDK_VERSION }}-linux.zip
+          unzip -q android-ndk.zip
+          mv android-ndk-${{ env.NDK_VERSION }} $HOME/android-ndk
+
+      - name: Set up Android toolchain
+        run: |
+          echo "TOOLCHAIN=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64" >> $GITHUB_ENV
+          echo "SYSROOT=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot" >> $GITHUB_ENV
+          echo "CC=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang" >> $GITHUB_ENV
+          echo "AR=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar" >> $GITHUB_ENV
+          echo "RANLIB=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib" >> $GITHUB_ENV
+          echo "STRIP=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+          echo "CXX=$HOME/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ env.ANDROID_TRIPLE }}${{ env.ANDROID_API }}-clang++" >> $GITHUB_ENV
+
+      - name: Configure Python for Android
+        working-directory: python-src
+        run: |
+          ./configure \
+            --host=${{ env.ANDROID_TRIPLE }} \
+            --build=$(./config.guess) \
+            --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-android \
+            --enable-optimizations \
+            ac_cv_file__dev_ptmx=no \
+            ac_cv_file__dev_ptc=no \
+            ac_cv_have_long_long_format=yes \
+            ac_cv_little_endian_double=yes \
+            ac_cv_func_sem_open=no \
+            ac_cv_func_sem_timedwait=no \
+            ac_cv_func_posix_fadvise=no \
+            ac_cv_func_clock_gettime=yes \
+            ac_cv_func_fork=no \
+            ac_cv_func_vfork=no \
+            ac_cv_func_mmap_fixed_mapped=yes \
+            ac_cv_func_memfd_create=no \
+            READELF=/usr/bin/readelf \
+            CPPFLAGS="-DANDROID -D__ANDROID_API__=${{ env.ANDROID_API }}" \
+            CFLAGS="--sysroot=$SYSROOT" \
+            LDFLAGS="--sysroot=$SYSROOT"
+
+      - name: Build Python
+        working-directory: python-src
+        run: |
+          make -j$(nproc)
+
+      - name: Install Python to custom prefix
+        working-directory: python-src
+        run: |
+          make install
+
+      - name: Upload Android Python Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-${{ env.PYTHON_VERSION }}-android
+          path: python-${{ env.PYTHON_VERSION }}-android
