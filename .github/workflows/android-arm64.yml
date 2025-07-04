@@ -55,7 +55,7 @@ jobs:
         run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
 
       - name: Build and Package
-        working_directory: ~/cpython
+        working-directory: ~/cpython
         run: |
           ./Android/android.py configure-build
           ./Android/android.py make-build
