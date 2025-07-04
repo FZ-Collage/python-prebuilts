@@ -42,20 +42,24 @@ jobs:
 
       - name: Set environment path for iOS
         run: |
-          echo "PATH=$PATH:$(pwd)/iOS/Resources/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin" >> $GITHUB_ENV
-          echo "IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)" >> $GITHUB_ENV
-          echo "CC=\"$(xcrun -sdk iphoneos -f clang)\"" >> $GITHUB_ENV
+          export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
+          export CC=$(xcrun -sdk iphoneos -f clang)
           export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
+          export LDFLAGS="$CFLAGS"
+          export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          mkdir -p deps_build
+          echo "IOS_SDK=$IOS_SDK" >> $GITHUB_ENV
+          echo "CC=$CC" >> $GITHUB_ENV
           echo "CFLAGS=$CFLAGS" >> $GITHUB_ENV
-          echo "LDFLAGS=\"$CFLAGS\"" >> $GITHUB_ENV
-          echo "TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64" >> $GITHUB_ENV
+          echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
+          echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
           mkdir -p deps_build
         shell: bash
 
       - name: Configure iOS dependencies
         shell: bash
         run: |
-          mkdir -p ${{ env.TARGET_DIR }}
+          mkdir -p $TARGET_DIR
 
           cd deps_build
 
@@ -67,11 +71,11 @@ jobs:
 
           ./configure \
             --host=arm-apple-darwin \
-            --prefix=${{ env.TARGET_DIR }}/libffi \
+            --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
-            CC="${{ env.CC }}" \
-            CFLAGS="${{ env.CFLAGS }}"
+            CC="$CC" \
+            CFLAGS="$CFLAGS"
 
           make -j2
           make install
@@ -84,11 +88,11 @@ jobs:
 
           ./configure \
             --host=arm-apple-darwin \
-            --prefix=${{ env.TARGET_DIR }}/xz \
+            --prefix=$TARGET_DIR/xz \
             --disable-shared \
             --enable-static \
-            CC="${{ env.CC }}" \
-            CFLAGS="${{ env.CFLAGS }}"
+            CC="$CC" \
+            CFLAGS="$CFLAGS"
 
           make -j2
           make install
@@ -101,9 +105,9 @@ jobs:
 
           make clean
 
-          make CC="${{ env.CC }}" CFLAGS="${{ env.CFLAGS }} -fPIC" -j2
+          make CC="$CC" CFLAGS="$CFLAGS -fPIC" -j2
 
-          make install PREFIX=${{ env.TARGET_DIR }}/bzip2
+          make install PREFIX=$TARGET_DIR/bzip2
 
           cd ..
 
@@ -112,9 +116,9 @@ jobs:
           cd openssl-1.1.1w
 
           ./Configure ios64-cross no-shared no-dso \
-            --prefix=${{ env.TARGET_DIR }}/openssl \
-            CC="${{ env.CC }}" \
-            CFLAGS="${{ env.CFLAGS }}"
+            --prefix=$TARGET_DIR/openssl \
+            CC="$CC" \
+            CFLAGS="$CFLAGS"
 
           make -j2
           make install_sw
