@@ -24,11 +24,6 @@ jobs:
             https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}/Python-${{ env.PYTHON_VERSION }}.tgz
         shell: bash
 
-      - name: Extract source
-        run: |
-          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz -C .
-        shell: bash
-
       - name: Set up Clang toolchain
         run: |
           echo "CC=clang" >> $GITHUB_ENV
@@ -39,12 +34,15 @@ jobs:
           echo "LD=lld-link" >> $GITHUB_ENV
         shell: bash
 
-      - name: Configure Python for Windows (clang)
+      - name: Extract, Configure, Build, Install
         run: |
+          tar -xf Python-${{ env.PYTHON_VERSION }}.tgz -C .
           ./configure \
             --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-windows \
             --enable-optimizations \
             --without-ensurepip
+          nmake -j2
+          nmake install
         shell: bash
 
       - name: Upload artifact
