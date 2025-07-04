@@ -1,4 +1,4 @@
-name: Build Python Android
+name: Build Python Android (arm64-v8a)
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,13 +25,15 @@ env:
   NDK_VERSION: r26d
 
 jobs:
-  build-python-android:
+  build-python-android-arm64-v8a:
     runs-on: ubuntu-latest
     steps:
-      - name: Create working directory
-        run: |
-          sudo mkdir -p /cpython
-          sudo chown $USER:$USER /cpython
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: python/cpython
+          ref: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
         run: |
@@ -55,24 +58,32 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Clone
-        run: git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git /cpython
-        shell: bash
-
       - name: Configure
-        run: /cpython/Android/android.py configure-build
+        run: ./Android/android.py configure-build
         shell: bash
 
       - name: Build
-        run: /cpython/Android/android.py make-build
+        run: ./Android/android.py make-build
         shell: bash
 
       - name: Package
-        run: /cpython/Android/android.py package ${{ env.ANDROID_HOST }}
+        run: ./Android/android.py package ${{ env.ANDROID_HOST }}
+        shell: bash
+
+      - name: List Git Root
+        run: ls
+        shell: bash
+
+      - name: List Android Root
+        run: ls Android
+        shell: bash
+
+      - name: List packaged
+        run: ls packaged
         shell: bash
 
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
         with:
           name: python-android-${{ env.ANDROID_HOST }}
-          path: /cpython/packaged/${{ env.ANDROID_HOST }}
+          path: ./packaged/${{ env.ANDROID_HOST }}
