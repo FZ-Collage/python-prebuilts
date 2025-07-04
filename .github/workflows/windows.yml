@@ -40,7 +40,6 @@ jobs:
         shell: bash
 
       - name: Configure Python for Windows (clang)
-        working-directory: python-src
         run: |
           ./configure \
             --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-windows \
