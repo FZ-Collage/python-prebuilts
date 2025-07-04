@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: "3.10"
+  PYTHON_VERSION: "3.14"
   ANDROID_HOST: aarch64-linux-android
   # armv7a-linux-androideabi
   # x86_64-linux-android
@@ -91,5 +91,5 @@ jobs:
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
         with:
-          name: python-android-${{ env.ANDROID_HOST }}
+          name: python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_HOST }}
           path: ./packaged/${{ env.ANDROID_HOST }}
