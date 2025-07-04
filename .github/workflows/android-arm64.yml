@@ -52,8 +52,9 @@ jobs:
 
       - name: Configure Python for Android
         run: |
-          git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git .
-          ./Android/android.py configure-build
-          ./Android/android.py make-build
-          ./Android/android.py package ${{ env.ANDROID_HOST }}
+          git clone --branch ${{ env.PYTHON_VERSION }} --depth 1 https://github.com/python/cpython.git
+          cd cpython
+          Android/android.py configure-build
+          Android/android.py make-build
+          Android/android.py package ${{ env.ANDROID_HOST }}
         shell: bash
