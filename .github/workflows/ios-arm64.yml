@@ -146,6 +146,11 @@ jobs:
 
           cd ..
 
+      - name: Clean Python build before iOS configure
+        shell: bash
+        run: |
+          make distclean || true
+
       - name: Configure Python for iOS arm64
         run: |
           export SDKROOT=$(xcrun --sdk iphoneos --show-sdk-path)
