@@ -63,6 +63,7 @@ jobs:
         run: |
           export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
           export CC=$(xcrun -sdk iphoneos -f clang)
+          export CPP="$CC -E"
           export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
           export LDFLAGS="$CFLAGS"
           export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
@@ -80,7 +81,7 @@ jobs:
           ./autogen.sh
 
           ./configure \
-            --host=arm64-apple-ios \
+            --host=arm-apple-darwin \
             --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
@@ -88,7 +89,10 @@ jobs:
             --disable-docs \
             --enable-closures \
             CC="$CC" \
-            CFLAGS="$CFLAGS"
+            CPP="$CPP" \
+            CFLAGS="$CFLAGS" \
+            AR="$AR" \
+            RANLIB="$RANLIB"
 
           make -j$(sysctl -n hw.logicalcpu)
           make install
@@ -100,12 +104,15 @@ jobs:
           cd xz-5.2.5
 
           ./configure \
-            --host=arm64-apple-ios \
+            --host=arm-apple-darwin \
             --prefix=$TARGET_DIR/xz \
             --disable-shared \
             --enable-static \
             CC="$CC" \
-            CFLAGS="$CFLAGS"
+            CPP="$CPP" \
+            CFLAGS="$CFLAGS" \
+            AR="$AR" \
+            RANLIB="$RANLIB"
 
           make -j$(sysctl -n hw.logicalcpu)
           make install
@@ -118,7 +125,13 @@ jobs:
 
           make clean
 
-          make CC="$CC" CFLAGS="$CFLAGS -fPIC" -j$(sysctl -n hw.logicalcpu) libbz2.a bzip2 bzip2recover
+          make \ 
+            CC="$CC" \
+            CPP="$CPP" \
+            CFLAGS="$CFLAGS" \
+            AR="$AR" \
+            RANLIB="$RANLIB" \
+            -j$(sysctl -n hw.logicalcpu) libbz2.a bzip2 bzip2recover
 
           make install PREFIX=$TARGET_DIR/bzip2
 
@@ -131,7 +144,10 @@ jobs:
           ./Configure ios64-cross no-shared no-dso \
             --prefix=$TARGET_DIR/openssl \
             CC="$CC" \
-            CFLAGS="$CFLAGS"
+            CPP="$CPP" \
+            CFLAGS="$CFLAGS" \
+            AR="$AR" \
+            RANLIB="$RANLIB"
 
           make -j$(sysctl -n hw.logicalcpu)
           make install_sw
