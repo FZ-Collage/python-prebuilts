@@ -48,7 +48,15 @@ jobs:
         run: ./PCbuild/amd64/python.exe -m pip install "sphinx<8.0"
 
       - name: Gen Docs
-        run: ./Doc/make.bat htmlhelp
+        run: |
+          ./Doc/make.bat html
+          ./Doc/make.bat doctest
+          ./Doc/make.bat htmlhelp
+          ./Doc/make.bat latex
+          ./Doc/make.bat text
+          ./Doc/make.bat linkcheck
+          ./Doc/make.bat suspicious
+          ./Doc/make.bat changes
 
       - name: Build
         run: ./Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
