@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: 3.10.18
+  PYTHON_VERSION: 3.13.5
 
 jobs:
   configure-build-and-package-python-ubuntu:

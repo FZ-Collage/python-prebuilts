@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 env:
-  PYTHON_VERSION: "3.14"
+  PYTHON_VERSION: "3.13"
   IOS_ARCH: arm64
 
 jobs:
