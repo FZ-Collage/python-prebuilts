@@ -205,6 +205,7 @@ jobs:
             --build=arm64-apple-darwin \
             --with-build-python="$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }}" \
             --enable-framework \
+            --enable-shared \
             --without-system-libzstd \
             CC="$CC" \
             CPP="$CPP" \
