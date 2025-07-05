@@ -31,9 +31,6 @@ jobs:
         run: |
           brew install autoconf automake libtool
 
-      - name: List brew bin
-        run: ls /opt/homebrew/bin
-
       - name: Build host macOS Python
         run: |
           ./configure --prefix=$(pwd)/cross-build/macOS
