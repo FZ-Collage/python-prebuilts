@@ -149,7 +149,7 @@ jobs:
       - name: Clean Python build before iOS configure
         shell: bash
         run: |
-          make distclean || true
+          find . -name '*.o' -delete
 
       - name: Configure Python for iOS arm64
         run: |
