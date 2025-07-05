@@ -14,6 +14,7 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.14"
+  IOS_ARCH: arm64
 
 jobs:
   build-python-ios-arm64:
@@ -44,9 +45,9 @@ jobs:
         run: |
           export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
           export CC=$(xcrun -sdk iphoneos -f clang)
-          export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
+          export CFLAGS="-isysroot $IOS_SDK -arch ${{ env.IOS_ARCH }} -mios-version-min=12.0"
           export LDFLAGS="$CFLAGS"
-          export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          export TARGET_DIR=$(pwd)/cross-build/iphoneos.${{ env.IOS_ARCH }}
           export AR=$(xcrun --sdk iphoneos --find ar)
           export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
           mkdir -p deps_build
@@ -64,9 +65,9 @@ jobs:
           export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
           export CC=$(xcrun -sdk iphoneos -f clang)
           export CPP="$CC -E"
-          export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
+          export CFLAGS="-isysroot $IOS_SDK -arch ${{ env.IOS_ARCH }} -mios-version-min=12.0"
           export LDFLAGS="$CFLAGS"
-          export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          export TARGET_DIR=$(pwd)/cross-build/iphoneos.${{ env.IOS_ARCH }}
           export AR=$(xcrun --sdk iphoneos --find ar)
           export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
 
@@ -81,7 +82,7 @@ jobs:
           ./autogen.sh
 
           ./configure \
-            --host=arm64-apple-ios \
+            --host=${{ env.IOS_ARCH }}-apple-ios \
             --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
@@ -104,7 +105,7 @@ jobs:
           cd xz-5.8.1
 
           ./configure \
-            --host=arm64-apple-ios \
+            --host=${{ env.IOS_ARCH }}-apple-ios \
             --prefix=$TARGET_DIR/xz \
             --disable-shared \
             --enable-static \
@@ -168,7 +169,7 @@ jobs:
         run: |
           find . -name '*.o' -delete
 
-      - name: Configure Python for iOS arm64
+      - name: Configure Python for iOS ${{ env.IOS_ARCH }}
         run: |
           export SDKROOT=$(xcrun --sdk iphoneos --show-sdk-path)
           export CC=$(xcrun --sdk iphoneos --find clang)
@@ -176,7 +177,7 @@ jobs:
           export AR=$(xcrun --sdk iphoneos --find ar)
           export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
 
-          export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          export TARGET_DIR=$(pwd)/cross-build/iphoneos.${{ env.IOS_ARCH }}
           export ZSTD_CFLAGS="-I$TARGET_DIR/zstd/include"
           export ZSTD_LIBS="-L$TARGET_DIR/zstd/lib -lzstd"
         
@@ -187,7 +188,7 @@ jobs:
           unset LIBRARY_PATH
           unset LD_LIBRARY_PATH
 
-          export CFLAGS="$ZSTD_CFLAGS $LIBFFI_CFLAGS -isysroot $SDKROOT -arch arm64 -mios-version-min=12.0 -fPIC"
+          export CFLAGS="$ZSTD_CFLAGS $LIBFFI_CFLAGS -isysroot $SDKROOT -arch ${{ env.IOS_ARCH }} -mios-version-min=12.0 -fPIC"
           export LDFLAGS="$ZSTD_LIBS $LIBFFI_LIBS $CFLAGS"
 
           ./configure \
@@ -201,8 +202,8 @@ jobs:
             LIBFFI_LIBS="$LIBFFI_LIBS" \
             --prefix="$TARGET_DIR" \
             --with-openssl="$TARGET_DIR/openssl" \
-            --host=arm64-apple-ios12.0 \
-            --build=arm64-apple-darwin \
+            --host=${{ env.IOS_ARCH }}-apple-ios12.0 \
+            --build=${{ env.IOS_ARCH }}-apple-darwin \
             --with-build-python="$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }}" \
             --enable-framework="$TARGET_DIR" \
             --without-system-libzstd \
@@ -212,7 +213,7 @@ jobs:
             RANLIB="$RANLIB"
         shell: bash
 
-      - name: Build Python for iOS arm64
+      - name: Build Python for iOS ${{ env.IOS_ARCH }}
         run: |
           export CC=$(xcrun --sdk iphoneos --find clang)
           export CPP="$CC -E"
@@ -226,13 +227,13 @@ jobs:
           make CC="$CC" CPP="$CPP" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu)
         shell: bash
 
-      - name: Install Python for iOS arm64
+      - name: Install Python for iOS ${{ env.IOS_ARCH }}
         run: |
           make install
         shell: bash
 
-      - name: Upload Python iOS arm64 artifact
+      - name: Upload Python iOS ${{ env.IOS_ARCH }} artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}-ios-arm64
-          path: cross-build/iphoneos.arm64
+          name: python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}
+          path: ${{ env.TARGET_DIR }}
