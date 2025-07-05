@@ -45,9 +45,14 @@ jobs:
         run: |
           sudo make install
         shell: bash
+      
+      - name: tar.gz files
+        run: |
+          cd python-${{ env.PYTHON_VERSION }}-macos-arm
+          tar -cvf ../python-${{ env.PYTHON_VERSION }}-macos-arm.tar.gz *
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-macos-arm
-          path: python-${{ env.PYTHON_VERSION }}-macos-arm
+          path: python-${{ env.PYTHON_VERSION }}-macos-arm.tar.gz

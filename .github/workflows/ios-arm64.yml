@@ -228,9 +228,14 @@ jobs:
         run: |
           make install
         shell: bash
+      
+      - name: tar.gz files
+        run: |
+          cd ${{ env.TARGET_DIR }}
+          tar -cvf ../python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}.tar.gz *
 
       - name: Upload Python iOS amd64 artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}
-          path: ${{ env.TARGET_DIR }}
+          path: python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}.tar.gz
