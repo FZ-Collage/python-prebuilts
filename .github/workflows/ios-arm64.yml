@@ -125,7 +125,7 @@ jobs:
 
           make clean
 
-          make \ 
+          make \
             CC="$CC" \
             CPP="$CPP" \
             CFLAGS="$CFLAGS" \
