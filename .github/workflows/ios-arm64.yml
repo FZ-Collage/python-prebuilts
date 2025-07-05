@@ -199,13 +199,12 @@ jobs:
             BZIP2_LIBS="-L$TARGET_DIR/bzip2/lib -lbz2" \
             LIBFFI_CFLAGS="$LIBFFI_CFLAGS" \
             LIBFFI_LIBS="$LIBFFI_LIBS" \
-            --prefix=$TARGET_DIR \
+            --prefix="$TARGET_DIR" \
             --with-openssl="$TARGET_DIR/openssl" \
             --host=arm64-apple-ios12.0 \
             --build=arm64-apple-darwin \
             --with-build-python="$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }}" \
-            --enable-framework \
-            --enable-shared \
+            --enable-framework="$TARGET_DIR" \
             --without-system-libzstd \
             CC="$CC" \
             CPP="$CPP" \
