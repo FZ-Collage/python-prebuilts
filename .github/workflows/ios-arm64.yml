@@ -80,12 +80,13 @@ jobs:
           ./autogen.sh
 
           ./configure \
-            --host=arm-apple-darwin \
+            --host=arm64-apple-ios \
             --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
             --disable-dependency-tracking \
             --disable-docs \
+            --enable-closures \
             CC="$CC" \
             CFLAGS="$CFLAGS"
 
@@ -99,7 +100,7 @@ jobs:
           cd xz-5.2.5
 
           ./configure \
-            --host=arm-apple-darwin \
+            --host=arm64-apple-ios \
             --prefix=$TARGET_DIR/xz \
             --disable-shared \
             --enable-static \
