@@ -48,11 +48,11 @@ jobs:
 
       - name: tar.gz files
         run: |
-          cd python-${{ env.PYTHON_VERSION }}-linux
-          tar -cvf ../python-${{ env.PYTHON_VERSION }}-linux.tar.gz *
+          cd python-${{ env.PYTHON_VERSION }}-linux-x86_64
+          tar -cvf ../python-${{ env.PYTHON_VERSION }}-linux-x86_64.tar.gz *
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-${{ env.PYTHON_VERSION }}-linux
-          path: python-${{ env.PYTHON_VERSION }}-linux.tar.gz
+          name: python-${{ env.PYTHON_VERSION }}-linux-x86_64
+          path: python-${{ env.PYTHON_VERSION }}-linux-x86_64.tar.gz
