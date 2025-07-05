@@ -47,6 +47,8 @@ jobs:
           export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
           export LDFLAGS="$CFLAGS"
           export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          export AR=$(xcrun --sdk iphoneos --find ar)
+          export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
           mkdir -p deps_build
           echo "IOS_SDK=$IOS_SDK" >> $GITHUB_ENV
           echo "CC=$CC" >> $GITHUB_ENV
@@ -59,6 +61,14 @@ jobs:
       - name: Configure iOS dependencies
         shell: bash
         run: |
+          export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
+          export CC=$(xcrun -sdk iphoneos -f clang)
+          export CFLAGS="-isysroot $IOS_SDK -arch arm64 -mios-version-min=12.0"
+          export LDFLAGS="$CFLAGS"
+          export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
+          export AR=$(xcrun --sdk iphoneos --find ar)
+          export RANLIB=$(xcrun --sdk iphoneos --find ranlib)
+          
           mkdir -p $TARGET_DIR
 
           cd deps_build
@@ -131,8 +141,8 @@ jobs:
           tar -xf zstd-1.5.6.tar.gz
           cd zstd-1.5.6
 
-          make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu) default
-          make PREFIX="$TARGET_DIR/zstd" install
+          make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu) lib-release
+          make PREFIX="$TARGET_DIR/zstd" CC="$CC" AR="$AR" RANLIB="$RANLIB" install
 
           cd ..
 
