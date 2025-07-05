@@ -169,7 +169,7 @@ jobs:
         run: |
           find . -name '*.o' -delete
 
-      - name: Configure Python for iOS ${{ env.IOS_ARCH }}
+      - name: Configure Python for iOS amd64
         run: |
           export SDKROOT=$(xcrun --sdk iphoneos --show-sdk-path)
           export CC=$(xcrun --sdk iphoneos --find clang)
@@ -213,7 +213,7 @@ jobs:
             RANLIB="$RANLIB"
         shell: bash
 
-      - name: Build Python for iOS ${{ env.IOS_ARCH }}
+      - name: Build Python for iOS amd64
         run: |
           export CC=$(xcrun --sdk iphoneos --find clang)
           export CPP="$CC -E"
@@ -227,12 +227,12 @@ jobs:
           make CC="$CC" CPP="$CPP" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu)
         shell: bash
 
-      - name: Install Python for iOS ${{ env.IOS_ARCH }}
+      - name: Install Python for iOS amd64
         run: |
           make install
         shell: bash
 
-      - name: Upload Python iOS ${{ env.IOS_ARCH }} artifact
+      - name: Upload Python iOS amd64 artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}
