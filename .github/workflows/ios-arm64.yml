@@ -162,13 +162,16 @@ jobs:
           export TARGET_DIR=$(pwd)/cross-build/iphoneos.arm64
           export ZSTD_CFLAGS="-I$TARGET_DIR/zstd/include"
           export ZSTD_LIBS="-L$TARGET_DIR/zstd/lib -lzstd"
+        
+          export LIBFFI_CFLAGS="-I$TARGET_DIR/libffi/include"
+          export LIBFFI_LIBS="-L$TARGET_DIR/libffi/lib -lffi"
 
           unset PKG_CONFIG_PATH
           unset LIBRARY_PATH
           unset LD_LIBRARY_PATH
 
-          export CFLAGS="$ZSTD_CFLAGS -isysroot $SDKROOT -arch arm64 -mios-version-min=12.0 -fPIC"
-          export LDFLAGS="$ZSTD_LIBS $CFLAGS"
+          export CFLAGS="$ZSTD_CFLAGS $LIBFFI_CFLAGS -isysroot $SDKROOT -arch arm64 -mios-version-min=12.0 -fPIC"
+          export LDFLAGS="$ZSTD_LIBS $LIBFFI_LIBS $CFLAGS"
 
           ./configure \
             ZSTD_CFLAGS="$ZSTD_CFLAGS" \
@@ -177,8 +180,8 @@ jobs:
             LIBLZMA_LIBS="-L$TARGET_DIR/xz/lib -llzma" \
             BZIP2_CFLAGS="-I$TARGET_DIR/bzip2/include" \
             BZIP2_LIBS="-L$TARGET_DIR/bzip2/lib -lbz2" \
-            LIBFFI_CFLAGS="-I$TARGET_DIR/libffi/include" \
-            LIBFFI_LIBS="-L$TARGET_DIR/libffi/lib -lffi" \
+            LIBFFI_CFLAGS="$LIBFFI_CFLAGS" \
+            LIBFFI_LIBS="$LIBFFI_LIBS" \
             --with-openssl="$TARGET_DIR/openssl" \
             --host=arm64-apple-ios12.0 \
             --build=arm64-apple-darwin \
