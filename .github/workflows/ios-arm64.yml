@@ -132,7 +132,7 @@ jobs:
           cd zstd-1.5.6/build/cmake
           mkdir build_ios && cd build_ios
 
-          make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu)
+          make CC="$CC" CFLAGS="$CFLAGS" AR="$AR" RANLIB="$RANLIB" -j$(sysctl -n hw.logicalcpu) default
           make PREFIX="$TARGET_DIR/zstd" install
 
           cd ..
