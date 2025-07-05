@@ -204,6 +204,7 @@ jobs:
             --host=arm64-apple-ios12.0 \
             --build=arm64-apple-darwin \
             --with-build-python="$(pwd)/cross-build/macOS/bin/python${{ env.PYTHON_VERSION }}" \
+            --enable-framework \
             --without-system-libzstd \
             CC="$CC" \
             CPP="$CPP" \
@@ -229,6 +230,10 @@ jobs:
         run: |
           make install
         shell: bash
+
+      - name: Move installed framework to target dir
+        run: 
+          mv iOS/Frameworks/arm64-iphoneos "$TARGET_DIR/Python.framework"
 
       - name: Upload Python iOS arm64 artifact
         uses: actions/upload-artifact@v4
