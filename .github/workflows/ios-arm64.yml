@@ -81,7 +81,7 @@ jobs:
           ./autogen.sh
 
           ./configure \
-            --host=arm-apple-darwin \
+            --host=arm64-apple-ios \
             --prefix=$TARGET_DIR/libffi \
             --disable-shared \
             --enable-static \
@@ -99,12 +99,12 @@ jobs:
 
           cd ..
 
-          curl -LO https://tukaani.org/xz/xz-5.2.5.tar.gz
-          tar -xf xz-5.2.5.tar.gz
-          cd xz-5.2.5
+          curl -LO https://github.com/tukaani-project/xz/releases/download/v5.8.1/xz-5.8.1.tar.gz
+          tar -xf xz-5.8.1.tar.gz
+          cd xz-5.8.1
 
           ./configure \
-            --host=arm-apple-darwin \
+            --host=arm64-apple-ios \
             --prefix=$TARGET_DIR/xz \
             --disable-shared \
             --enable-static \
