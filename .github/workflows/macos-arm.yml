@@ -33,7 +33,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm --enable-optimizations
+          ./configure --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm --enable-shared --enable-optimizations
         shell: bash
 
       - name: Build python
