@@ -233,7 +233,7 @@ jobs:
         run: |
           export WORKDIR=$(pwd)
           cd ${{ env.TARGET_DIR }}
-          tar -cvf $WORKDIR/python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}.tar.gz *
+          tar -cvzf $WORKDIR/python-${{ env.PYTHON_VERSION }}-ios-${{ env.IOS_ARCH }}.tar.gz *
 
       - name: Upload Python iOS amd64 artifact
         uses: actions/upload-artifact@v4

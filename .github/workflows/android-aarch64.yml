@@ -119,7 +119,7 @@ jobs:
           mv extracted/prefix/* packaging/${{ env.ANDROID_TRIPLE }}/
 
           echo "📦 Creating final tarball..."
-          tar -czf "python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz" -C packaging ${{ env.ANDROID_TRIPLE }}
+          tar -czzf "python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz" -C packaging ${{ env.ANDROID_TRIPLE }}
 
           echo "✅ Final archive created:"
           ls -lh "python-${{ env.PYTHON_VERSION }}-android-${{ env.ANDROID_TRIPLE }}.tar.gz"

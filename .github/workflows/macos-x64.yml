@@ -49,7 +49,7 @@ jobs:
       - name: tar.gz files
         run: |
           cd python-${{ env.PYTHON_VERSION }}-macos-x64
-          tar -cvf ../python-${{ env.PYTHON_VERSION }}-macos-x64.tar.gz *
+          tar -cvzf ../python-${{ env.PYTHON_VERSION }}-macos-x64.tar.gz *
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
