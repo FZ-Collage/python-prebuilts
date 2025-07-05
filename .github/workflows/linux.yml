@@ -1,4 +1,4 @@
-name: Build Python Ubuntu
+name: Build Python Ubuntu (x86_64)
 
 on:
   push:
@@ -16,7 +16,7 @@ env:
   PYTHON_VERSION: 3.13.5
 
 jobs:
-  configure-build-and-package-python-ubuntu:
+  configure-build-and-package-python-ubuntu-x86_64:
     runs-on: ubuntu-latest
     steps:
       - name: Download python source
@@ -33,7 +33,7 @@ jobs:
 
       - name: Configure python
         run: |
-          ./configure --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-linux --enable-optimizations
+          ./configure --prefix=$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-linux-x86_64 --enable-optimizations
         shell: bash
 
       - name: Build python
