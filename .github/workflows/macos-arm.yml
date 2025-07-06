@@ -45,6 +45,27 @@ jobs:
         run: |
           sudo make install
         shell: bash
+
+      - name: Patch install names for relocatable build
+        run: |
+          BIN="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm/bin/python${{ env.PYTHON_SHORT_VERSION }}"
+          DYLIB="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm/lib/libpython${{ env.PYTHON_SHORT_VERSION }}.dylib"
+
+          echo "Before patch:"
+          otool -L "$BIN"
+
+          # Change reference to use relative @executable_path
+          install_name_tool -change "$DYLIB" "@executable_path/../lib/libpython${{ env.PYTHON_SHORT_VERSION }}.dylib" "$BIN"
+
+          # Change dylib's own install name so it's linkable
+          install_name_tool -id "@rpath/libpython${{ env.PYTHON_SHORT_VERSION }}.dylib" "$DYLIB"
+
+          echo "After patch:"
+          otool -L "$BIN"
+
+          # Sanity check
+          "$BIN" --version
+        shell: bash
       
       - name: tar.gz files
         run: |
