@@ -13,6 +13,7 @@ permissions:
   contents: write
 
 env:
+  PYTHON_SHORT_VERSION: "3.13"
   PYTHON_VERSION: 3.13.5
 
 jobs:
@@ -48,6 +49,8 @@ jobs:
 
       - name: Patch install names for relocatable build
         run: |
+          ls -lah "$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm/bin"
+          
           BIN="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm/bin/python${{ env.PYTHON_SHORT_VERSION }}"
           DYLIB="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-arm/lib/libpython${{ env.PYTHON_SHORT_VERSION }}.dylib"
 
