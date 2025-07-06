@@ -55,11 +55,15 @@ jobs:
       - name: Build
         run: ./Tools/msi/buildrelease.bat -x64 -D -o packaged-windows
         
-      - name: list
-        run: ls packaged-windows
+      - name: list and move to windows-amd64.exe
+        run: |
+          cd packaged-windows
+          ls -lah .
+          mv amd64/python-${{ env.PYTHON_VERSION_FULL }}-amd64.exe amd64/python-${{ env.PYTHON_VERSION_FULL }}-windows-amd64.exe
+        shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-${{ env.PYTHON_VERSION_FULL }}-amd64
-          path: packaged-windows/amd64/python-${{ env.PYTHON_VERSION_FULL }}-amd64.exe
+          path: packaged-windows/amd64/python-${{ env.PYTHON_VERSION_FULL }}-windows-amd64.exe
