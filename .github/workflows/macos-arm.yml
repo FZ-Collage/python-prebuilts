@@ -44,7 +44,7 @@ jobs:
 
       - name: Install python
         run: |
-          sudo make install
+          make install
         shell: bash
 
       - name: Patch install names for relocatable build

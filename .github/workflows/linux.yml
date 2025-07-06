@@ -43,7 +43,7 @@ jobs:
 
       - name: Install python
         run: |
-          sudo make install
+          make install
         shell: bash
 
       - name: tar.gz files

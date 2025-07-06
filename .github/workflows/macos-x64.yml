@@ -44,13 +44,13 @@ jobs:
 
       - name: Install python
         run: |
-          sudo make install
+          make install
         shell: bash
 
       - name: Patch install names for relocatable build
         run: |
           ls -lah "$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-x64/bin"
-          
+
           BIN="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-x64/bin/python${{ env.PYTHON_SHORT_VERSION }}"
           DYLIB="$GITHUB_WORKSPACE/python-${{ env.PYTHON_VERSION }}-macos-x64/lib/libpython${{ env.PYTHON_SHORT_VERSION }}.dylib"
 
