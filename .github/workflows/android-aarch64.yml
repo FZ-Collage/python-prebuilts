@@ -15,7 +15,7 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
-  PYTHON_VERSION_FULL: "3.13.5"
+  PYTHON_VERSION_FULL: "3.13.6"
   ANDROID_HOST: aarch64-linux-android
   # armv7a-linux-androideabi
   # x86_64-linux-android

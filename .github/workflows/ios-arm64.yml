@@ -14,7 +14,7 @@ permissions:
 
 env:
   PYTHON_VERSION: "3.13"
-  PYTHON_VERSION_FULL: "3.13.5"
+  PYTHON_VERSION_FULL: "3.13.6"
   IOS_ARCH: arm64
 
 jobs:
