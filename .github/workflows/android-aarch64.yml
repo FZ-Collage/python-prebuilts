@@ -91,12 +91,12 @@ jobs:
         run: |
           set -e
 
-          echo "🔍 Locating Python archive in cross-build/${ANDROID_HOST}/dist..."
-          ARCHIVE=$(find cross-build/${ANDROID_HOST}/dist -name '*.tar.gz' | head -n 1)
+          echo "Locating Python archive in cross-build/${{ env.ANDROID_HOST }}/dist..."
+          ARCHIVE=$(find cross-build/${{ env.ANDROID_HOST }}/dist -name '*.tar.gz' | head -n 1)
 
-          if [[ -z "$ARCHIVE" || ! -f "$ARCHIVE" ]]
+          if [[ ! -f "$ARCHIVE" ]]
           then
-            echo "❌ Python archive not found in cross-build/${ANDROID_HOST}/dist"
+            echo "❌ Python archive not found!"
             exit 1
           fi
 
@@ -106,36 +106,24 @@ jobs:
           echo "📦 Extracting archive..."
           tar -xzf "$ARCHIVE" -C extracted
 
-          echo "📂 Checking top-level directory..."
-          TOPDIR=$(tar -tzf "$ARCHIVE" | head -1 | cut -f1 -d"/")
-          if [[ ! -d "extracted/$TOPDIR" ]]
+          # Confirm prefix exists
+          if [[ ! -d extracted/prefix ]]
           then
-            echo "❌ Expected top-level directory '$TOPDIR' not found after extraction"
+            echo "❌ expected extracted/prefix/, but it doesn't exist"
             ls -l extracted
             exit 1
           fi
 
-          echo "✅ Detected top-level directory: $TOPDIR"
-
-          echo "📂 Listing contents of $TOPDIR:"
-          ls -l extracted/"$TOPDIR"
-
-          if [[ ! -d "extracted/$TOPDIR/bin" ]]
-          then
-            echo "❌ /bin directory not found inside $TOPDIR — Python binaries missing!"
-            exit 1
-          fi
-
-          echo "📦 Preparing packaging directory..."
-          mkdir -p packaging/${ANDROID_HOST}
-          mv extracted/"$TOPDIR"/* packaging/${ANDROID_HOST}/
+          # Prepare packaging directory
+          mkdir -p packaging/${{ env.ANDROID_HOST }}
+          echo "📁 Moving prefix contents into ${{ env.ANDROID_HOST }}/..."
+          mv extracted/prefix/* packaging/${{ env.ANDROID_HOST }}/
 
           echo "📦 Creating final tarball..."
-          FINAL_TAR="python-${PYTHON_VERSION_FULL}-android-${ANDROID_ABI}.tar.gz"
-          tar -cvzf "$FINAL_TAR" -C packaging ${ANDROID_HOST}
+          tar -cvzf "python-${{ env.PYTHON_VERSION_FULL }}-android-${{ env.ANDROID_ABI }}.tar.gz" -C packaging ${{ env.ANDROID_HOST }}
 
           echo "✅ Final archive created:"
-          ls -lh "$FINAL_TAR"
+          ls -lh "python-${{ env.PYTHON_VERSION_FULL }}-android-${{ env.ANDROID_ABI }}.tar.gz"
 
       - name: Upload packaged Python Android build
         uses: actions/upload-artifact@v4
